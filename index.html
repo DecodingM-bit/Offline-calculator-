@@ -1,36 +1,142 @@
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Awesome Calculator</title>
-    <link rel="stylesheet" href="index.css">
+    <title>Minecraft Custom Loot Table Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="./assets/icon-192.png">
+    <link rel="manifest" href="./manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
   </head>
-  <body>
-    <div class="calculator">
-      <div class="display"></div>
-      <div class="controls">
-          <button class="teal">C</button>
-          <button class="teal"></button>
-          <button class="teal">%</button>
-          <button class="teal">+</button>
-          <button>7</button>
-          <button>8</button>
-          <button>9</button>
-          <button class="teal">-</button>
-          <button>4</button>
-          <button>5</button>
-          <button>6</button>
-          <button class="teal">X</button>
-          <button>1</button>
-          <button>2</button>
-          <button>3</button>
-          <button class="teal">÷</button>
-          <button>0</button>
-          <button class="teal">.</button>
-          <button class="teal">⮌</button>
-          <button class="teal">=</button>
-      </div>
+<body>
+
+    <button id="show-panel-btn">Custom Loot Table</button>
+
+    <div id="main-panel" class="container">
+        <p class="warning-text">
+            This loot is only adds “Armor trims” to the armors. For other loots try 
+            <a href="https://bedrock-oss.github.io/bedrock-loot-gen/" target="_blank" rel="noopener noreferrer">Loot Table Generator</a>.
+        </p>
+
+        <h1>Custom Loot Table</h1>
+        <p>This tool is made for Minecraft bedrock edition.</p>
+
+        <h2>Advanced Settings</h2>
+        <div class="settings-container">
+            <div class="setting-option">
+                <label for="defaultCodeCheck">Use default game code</label>
+                <input type="checkbox" id="defaultCodeCheck">
+                <span class="help-icon" onclick="showTooltip('The item(s) in this loot pool have a 50% chance of being dropped each time the loot is generated (e.g., when a chest is opened or a mob dies).')">?</span>
+            </div>
+            <div class="setting-option">
+                <label for="myCodeCheck">Use my code</label>
+                <input type="checkbox" id="myCodeCheck" checked>
+                 <span class="help-icon" onclick="showTooltip('100% loot drop rate.')">?</span>
+            </div>
+        </div>
+
+        <div id="items-container">
+            </div>
+
+        <div class="button-group">
+            <button id="proceed-btn">Proceed</button>
+            <button id="add-item-btn">Add Another Item</button>
+        </div>
+        
+        <div id="output-container" style="margin-top: 25px;">
+            <h2>JSON</h2>
+            <pre><code id="json-output">{
+  "pools": []
+}</code></pre>
+        </div>
     </div>
-    <script src="./index.js"></script>
+
+    <datalist id="armor-list">
+        <option value="minecraft:leather_helmet"></option>
+        <option value="minecraft:leather_chestplate"></option>
+        <option value="minecraft:leather_leggings"></option>
+        <option value="minecraft:leather_boots"></option>
+        <option value="minecraft:chainmail_helmet"></option>
+        <option value="minecraft:chainmail_chestplate"></option>
+        <option value="minecraft:chainmail_leggings"></option>
+        <option value="minecraft:chainmail_boots"></option>
+        <option value="minecraft:iron_helmet"></option>
+        <option value="minecraft:iron_chestplate"></option>
+        <option value="minecraft:iron_leggings"></option>
+        <option value="minecraft:iron_boots"></option>
+        <option value="minecraft:golden_helmet"></option>
+        <option value="minecraft:golden_chestplate"></option>
+        <option value="minecraft:golden_leggings"></option>
+        <option value="minecraft:golden_boots"></option>
+        <option value="minecraft:diamond_helmet"></option>
+        <option value="minecraft:diamond_chestplate"></option>
+        <option value="minecraft:diamond_leggings"></option>
+        <option value="minecraft:diamond_boots"></option>
+        <option value="minecraft:netherite_helmet"></option>
+        <option value="minecraft:netherite_chestplate"></option>
+        <option value="minecraft:netherite_leggings"></option>
+        <option value="minecraft:netherite_boots"></option>
+        <option value="minecraft:turtle_helmet"></option>
+        <option value="minecraft:copper_helmet"></option>
+        <option value="minecraft:copper_chestplate"></option>
+        <option value="minecraft:copper_leggings"></option>
+        <option value="minecraft:copper_boots"></option>
+    </datalist>
+
+    <datalist id="trim-list">
+        <option value="sentry"></option>
+        <option value="dune"></option>
+        <option value="coast"></option>
+        <option value="wild"></option>
+        <option value="tide"></option>
+        <option value="vex"></option>
+        <option value="rib"></option>
+        <option value="snout"></option>
+        <option value="eye"></option>
+        <option value="ward"></option>
+        <option value="spire"></option>
+        <option value="wayfinder"></option>
+        <option value="raiser"></option>
+        <option value="shaper"></option>
+        <option value="host"></option>
+        <option value="silence"></option>
+        <option value="eye"></option>
+        <option value="bolt"></option>
+        <option value="flow"></option>
+    </datalist>
+
+    <datalist id="material-list">
+        <option value="iron"></option>
+        <option value="copper"></option>
+        <option value="gold"></option>
+        <option value="lapis"></option>
+        <option value="emerald"></option>
+        <option value="diamond"></option>
+        <option value="netherite"></option>
+        <option value="redstone"></option>
+        <option value="amethyst"></option>
+        <option value="quartz"></option>
+    </datalist>
+        </div>
+    <button class="copy-btn" onclick="copyJson()">Copy</button>
+  </div>
+
+    <footer>
+        <p>Made by Unknown_Minecraft</p>
+        <p><a href="https://discord.gg/jx4p9x9fQv" target="_blank" rel="noopener noreferrer"><i class="fab fa-discord"></i>Discord</a></p>
+        <p><a href="https://youtube.com/@decodingmnetwork?si=I8s6gNYWRPU-ISZw" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i>YouTube: DecodingM Network</a></p>
+        <p><a href="https://github.com/Unknownminecraft" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i>GitHub</a></p>
+    </footer>
+
+    <script src="./script.js"></script>
   </body>
 </html>
